@@ -20,7 +20,7 @@ const getClient = () => {
     return client;
 }
 
-const getEnvValue = (key:string) => {
+export const getEnvValue = (key:string) => {
     const value = process.env[key];
     if (!value) {
         throw new Error(`${key} not set`);
@@ -45,7 +45,7 @@ const getBalance = async () => {
     return balance;
 }
 
-const mintNft = async (nftId:string, nftUrl: string) => {
+export const mintNft = async (nftId:string, nftUrl: string) => {
     const client = getClient();
     await client.connect()
     const walletCold = getWalletCold();
@@ -56,9 +56,9 @@ const mintNft = async (nftId:string, nftUrl: string) => {
         "Account": walletCold.publicKey,
         "URI": xrpl.convertStringToHex(nftUrl),
 
-        "Flags": parseInt(8),
+        "Flags": 8,
 
-        "TransferFee": parseInt(1),
+        "TransferFee": 1,
 
         "NFTokenTaxon": 0 //Required, but if you have no use for it, set to zero.
     }
