@@ -17,7 +17,7 @@ export default function Nfts() {
                 <Nft owner="0x1234" mintedDate={new Date()} />
                 <Nft owner="0x1234" mintedDate={new Date()} />
                 <Nft owner="0x1234" mintedDate={new Date()} />
-        </main>
+            </main>
         </>
     )
 }
