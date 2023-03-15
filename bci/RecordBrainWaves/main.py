@@ -11,6 +11,9 @@ from brainflow.board_shim import BoardShim, BrainFlowInputParams, LogLevels, Boa
 from brainflow.data_filter import DataFilter, FilterTypes, AggOperations
 from brainflow.ml_model import MLModel, BrainFlowMetrics, BrainFlowClassifiers, BrainFlowModelParams
 
+# generate csv file name
+filename = time.strftime("%Y%m%d-%H%M%S")
+filename = "eeg_data" + filename + ".csv"
 
 def main(i):
     BoardShim.enable_dev_board_logger()
@@ -38,96 +41,34 @@ def main(i):
     eeg4 = []
     timex = []  # list to store timestamp
 
-    while keep_alive == True:
 
-        while board.get_board_data_count() < 250:  # ensures that all data shape is the same
-            time.sleep(0.005)
-        data = board.get_current_board_data(250)
 
-        # creating a dataframe of the eeg data to extract eeg values later
-        eegdf = pd.DataFrame(np.transpose(data[eeg_channels]))
-        eegdf_col_names = ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7",
-                           "ch8", "ch9", "ch10", "ch11", "ch12", "ch13", "ch14", "ch15", "ch16"]
-        eegdf.columns = eegdf_col_names
+    # open csv file to store data
+    with open(filename, 'w') as f:
 
-        # to keep it simple, making another dataframe for the timestamps to access later
-        timedf = pd.DataFrame(np.transpose(data[timestamp]))
+        # TODO: write header to csv file 32 columns for 32 channels
 
-        print("EEG Dataframe")  # easy way to check what data is being streamed and if program is working
-        print(eegdf)  # isn't neccesary.
+        while keep_alive == True:
 
-        for count, channel in enumerate(eeg_channels):
-            # filters work in-place
-            # Check Brainflow docs for more filters
-            if count == 0:
-                DataFilter.perform_bandstop(data[channel], sampling_rate, 60.0, 4.0, 4,
-                                            FilterTypes.BUTTERWORTH.value, 0)  # bandstop 58 - 62
-                DataFilter.perform_bandpass(data[channel], sampling_rate, 21.0, 20.0, 4,
-                                            FilterTypes.BESSEL.value, 0)  # bandpass 11 - 31
-            if count == 1:
-                DataFilter.perform_bandstop(data[channel], sampling_rate, 60.0, 4.0, 4,
-                                            FilterTypes.BUTTERWORTH.value, 0)  # bandstop 58 - 62
-                DataFilter.perform_bandpass(data[channel], sampling_rate, 21.0, 20.0, 4,
-                                            FilterTypes.BESSEL.value, 0)  # bandpass 11 - 31
-            if count == 2:
-                DataFilter.perform_bandstop(data[channel], sampling_rate, 60.0, 4.0, 4,
-                                            FilterTypes.BUTTERWORTH.value, 0)  # bandstop 58 - 62
-                DataFilter.perform_bandpass(data[channel], sampling_rate, 21.0, 20.0, 4,
-                                            FilterTypes.BESSEL.value, 0)  # bandpass 11 - 31
-            if count == 3:
-                DataFilter.perform_bandstop(data[channel], sampling_rate, 60.0, 4.0, 4,
-                                            FilterTypes.BUTTERWORTH.value, 0)  # bandstop 58 - 62
-                DataFilter.perform_bandpass(data[channel], sampling_rate, 21.0, 20.0, 4,
-                                            FilterTypes.BESSEL.value, 0)  # bandpass 11 - 31
+            while board.get_board_data_count() < 1:  # ensures that at least one item is logged
+                time.sleep(0.005)
+            data = board.get_current_board_data(board.get_board_data_count())
+            board.stop_stream()
+            board.start_stream()
+            # print out dimensions of the data
+            print ('shape', data.shape)
+            # create a string to save to csv
+            data_string = ""
+            number_of_rows = data.shape[1]
 
-        # Brainflow ML Model
-        bands = DataFilter.get_avg_band_powers(
-            data, eeg_channels, sampling_rate, True)
-        feature_vector = np.concatenate((bands[0], bands[1]))
+            for i in range(0, number_of_rows):
+                for j in range(0, 31):
+                    data_string += str(data[j][i]) + ","
+                data_string += str(data[31][i]) + "\n"
+                f.writelines(data_string)
+                data_string = ""
 
-        # calc concentration
-        concentration_params = BrainFlowModelParams(
-            BrainFlowMetrics.CONCENTRATION.value, BrainFlowClassifiers.KNN.value)
-        concentration = MLModel(concentration_params)
-        concentration.prepare()
-        print('Concentration: %f' % concentration.predict(feature_vector))
-        concentrated_measure = concentration.predict(feature_vector)
-        concentration.release()
 
-        # calc relaxation
-        relaxation_params = BrainFlowModelParams(
-            BrainFlowMetrics.RELAXATION.value, BrainFlowClassifiers.KNN.value)
-        relaxation = MLModel(relaxation_params)
-        relaxation.prepare()
-        print('Relaxation: %f' % relaxation.predict(feature_vector))
-        relaxed_measure = relaxation.predict(feature_vector)
-        relaxation.release()
-
-        # appending eeg data to lists
-        eeg1.extend(eegdf.iloc[:, 0].values)  # I am using OpenBCI Ganglion board, so I only have four channels.
-        eeg2.extend(eegdf.iloc[:, 1].values)  # If you have a different board, you should be able to copy paste
-        eeg3.extend(eegdf.iloc[:, 2].values)  # these commands for more channels.
-        eeg4.extend(eegdf.iloc[:, 3].values)
-        timex.extend(timedf.iloc[:, 0].values)  # timestamps
-
-        plt.cla()
-        # plotting eeg data
-        plt.plot(timex, eeg1, label="Channel 1", color="red")
-        plt.plot(timex, eeg2, label="Channel 2", color="blue")
-        plt.plot(timex, eeg3, label="Channel 3", color="orange")
-        plt.plot(timex, eeg4, label="Channel 4", color="purple")
-        plt.tight_layout()
-        keep_alive = False  # resetting stream so that matplotlib can plot data
-
-        if concentrated_measure >= 0.5:
-            print("GOOD KEEP CONCENTRATING")  # a program screaming at you to concentrate should do the trick :)
-        else:
-            print("WHERE IS THE CONCENTRATION??")
-
-        if relaxed_measure >= 0.5:
-            print("YES RELAX MORE")
-        else:
-            print("NO, START RELAXING")
 
     board.stop_stream()
     board.release_session()
