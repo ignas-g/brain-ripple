@@ -1,15 +1,6 @@
 import pandas as pd
-from matplotlib import style
-from matplotlib.animation import FuncAnimation
-import matplotlib.pyplot as plt
-import matplotlib
 import time
-import sys
-import brainflow
-import numpy as np
 from brainflow.board_shim import BoardShim, BrainFlowInputParams, LogLevels, BoardIds
-from brainflow.data_filter import DataFilter, FilterTypes, AggOperations
-from brainflow.ml_model import MLModel, BrainFlowMetrics, BrainFlowClassifiers, BrainFlowModelParams
 
 # generate csv file name
 filename = time.strftime("%Y%m%d-%H%M%S")
@@ -23,25 +14,12 @@ def main(i):
     params = BrainFlowInputParams()
     board_id = BoardIds.SYNTHETIC_BOARD.value
     board = BoardShim(board_id, params)
-    eeg_channels = BoardShim.get_eeg_channels(board_id)
-    sampling_rate = BoardShim.get_sampling_rate(board_id)
-    timestamp = BoardShim.get_timestamp_channel(board_id)
+
 
     board.prepare_session()
     board.start_stream()
-    style.use('fivethirtyeight')
-    plt.title("Live EEG stream from Brainflow", fontsize=15)
-    plt.ylabel("Data in millivolts", fontsize=15)
-    plt.xlabel("\nTime", fontsize=10)
+
     keep_alive = True
-
-    eeg1 = []  # lists to store eeg data
-    eeg2 = []
-    eeg3 = []
-    eeg4 = []
-    timex = []  # list to store timestamp
-
-
 
     # open csv file to store data
     with open(filename, 'w') as f:
@@ -73,9 +51,3 @@ def main(i):
     board.stop_stream()
     board.release_session()
 
-
-ani = FuncAnimation(plt.gcf(), main,
-                    interval=1000)  # this essentially calls the function several times until keyboard interrupt
-plt.tight_layout()
-plt.autoscale(enable=True, axis="y", tight=True)
-plt.show()
