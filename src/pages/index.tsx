@@ -22,10 +22,10 @@ export default function Home() {
                       Mint your thoughts into an NFT
                   </Typography>
                   <Typography variant="body1" component="p" gutterBottom>
-                      Upload your faults and mint them into NFTs. Claim ownership and sell to others.
+                      Upload your thoughts and mint them into NFTs. Claim ownership and sell to others.
                   </Typography>
                   <Typography variant="body1" component="p" gutterBottom>
-                      Build a model that can recognize faults and control your computer without using your hands.
+                      Build a model that can recognize thoughts and control your computer without using your hands.
                   </Typography>
                   <Button variant="contained" color="primary">
                       Mint Now
