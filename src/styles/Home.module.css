@@ -1,0 +1,27 @@
+/* Home.module.css */
+.mainContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #050605;
+}
+
+.cardContainer {
+    padding: 16px;
+    text-align: center;
+    background-color: #050605;
+    color: #F7FEFC;
+}
+
+.cardContent {
+    background-color: #050605;
+}
+
+.logo {
+    margin-bottom: 16px;
+}
+
+.mintButton {
+    margin-top: 16px;
+}

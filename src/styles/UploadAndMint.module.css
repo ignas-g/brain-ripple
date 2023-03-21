@@ -1,0 +1,44 @@
+/* UploadAndMint.module.css */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #050605;
+    color: #F7FEFC;
+}
+
+.heading,
+.paragraph {
+    margin-bottom: 16px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.textInput,
+.fileInput {
+    padding: 8px;
+    background-color: #3D4A45;
+    color: #F7FEFC;
+    border: none;
+    border-radius: 4px;
+}
+
+.submitButton {
+    padding: 8px 16px;
+    background-color: #A9BDB4;
+    color: #050605;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submitButton:hover {
+    background-color: #ECEADE;
+}
