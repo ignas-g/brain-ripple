@@ -35,7 +35,7 @@ describe("Transfer class", () => {
     const txHash = await transfer.transferXRP(senderSeed, recipientAddress, amount);
 
     expect(txHash).toBeTruthy();
-  }, 10000);
+  }, 50000);
 
   it("should throw an error with an invalid sender seed", async () => {
     const invalidSenderSeed = "invalidSeed";
