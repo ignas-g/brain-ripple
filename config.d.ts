@@ -8,6 +8,8 @@ declare const config: {
     xrpl_publickey_hot: string;
     xrpl_privatekey_hot: string;
     xrpl_address_hot: string;
+    mongo_db_bc_uri: string;
+    mongo_db_bc_db: string;
 };
 
 export default config;

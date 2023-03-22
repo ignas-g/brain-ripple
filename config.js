@@ -13,6 +13,8 @@ const envSchema = Joi.object({
     XRPL_PUBLICKEY_HOT: Joi.string().required(),
     XRPL_PRIVATEKEY_HOT: Joi.string().required(),
     XRPL_ADDRESS_HOT: Joi.string().required(),
+    MONGODB_BC_URI: Joi.string().required(),
+    MONGODB_BC_DB: Joi.string().required(),
 }).unknown().required();
 
 const { error, value: envVars } = envSchema.prefs({ errors: { label: "key" } }).validate(process.env);
@@ -31,6 +33,8 @@ const config = {
     xrpl_publickey_hot: envVars.XRPL_PUBLICKEY_HOT,
     xrpl_privatekey_hot: envVars.XRPL_PRIVATEKEY_HOT,
     xrpl_address_hot: envVars.XRPL_ADDRESS_HOT,
+    mongo_db_bc_uri: envVars.MONGODB_BC_URI,
+    mongo_db_bc_db: envVars.MONGODB_BC_DB,
 };
 
 module.exports = config;

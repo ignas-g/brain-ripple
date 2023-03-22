@@ -13,6 +13,8 @@ const nextConfig = {
     XRPL_PULICKEY_HOT: config.xrpl_publickey_hot,
     XRPL_PRIVATEKEY_HOT: config.xrpl_privatekey_hot,
     XRPL_ADDRESS_HOT: config.xrpl_address_hot,
+    MONGODB_BC_URI: config.MONGODB_BC_URI,
+    MONGODB_BC_DB: config.MONGODB_BC_DB,
   },
 }
 

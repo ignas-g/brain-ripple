@@ -1,7 +1,8 @@
-import {MongoClient, MongoClientOptions} from 'mongodb'
+import {MongoClient, MongoClientOptions} from 'mongodb';
+import config from "../../config";
 
-const MONGODB_URI = String(process.env.MONGODB_BC_URI);
-const MONGODB_DB  = String(process.env.MONGODB_BC_DB);
+const MONGODB_URI = String(config.mongo_db_bc_uri);
+const MONGODB_DB  = String(config.mongo_db_bc_db);
 
 if (!MONGODB_URI) {
   throw new Error(
