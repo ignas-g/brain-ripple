@@ -74,4 +74,4 @@ This project is licensed under the [MIT License](LICENSE.md).
 
 ## Support
 
-For support or any questions, please open an issue or join our [community forum](http://community.brainripple.com/).
+For support or any questions, please open an issue or join our [community discord](https://discord.gg/vqAeRNFfEg).
