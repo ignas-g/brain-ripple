@@ -33,14 +33,21 @@ export class Account {
      * @returns A promise that resolves to the balance as an IBalance object, or an error message on failure.
      */
     public async getBalance(): Promise<IBalance | string> {
+        let client;
+
         try {
-            const client = await Core.getClient();
+            client = await Core.getClient();
             const balance = await client.getXrpBalance(this.walletCold.address);
 
+            await client.disconnect();
             return { value: balance, currency: "XRP" };
         } catch (error) {
             console.error("Error fetching balance:", error);
             return "Error fetching balance.";
+        } finally {
+            if (client?.isConnected()) {
+                await client.disconnect();
+            }
         }
     }
 
@@ -54,7 +61,7 @@ export class Account {
         try {
             const walletCold = xrpl.Wallet.fromSeed(config.xrpl_seed_cold);
             const walletHot = xrpl.Wallet.fromSeed(config.xrpl_seed_hot);
-            
+
             return new Account(walletCold, walletHot);
         } catch (error: any) {
             throw new Error(`Failed to create Account from environment variables: ${error.message}`);
