@@ -8,6 +8,8 @@ export interface IBalance {
     currency: string;
 }
 
+// XRPL Account Management Functions
+// Enables wallet loading and balance retrieval for user accounts
 export class Account {
     private readonly walletCold: Wallet;
     private readonly walletHot: Wallet;
@@ -17,12 +19,10 @@ export class Account {
         this.walletHot = walletHot;
     }
 
-    // Getter for walletCold
     get coldWallet(): Wallet {
         return this.walletCold;
     }
 
-    // Getter for walletHot
     get hotWallet(): Wallet {
         return this.walletHot;
     }

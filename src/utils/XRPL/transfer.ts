@@ -1,6 +1,8 @@
 import * as xrpl from "xrpl";
 import { Core } from "./core";
 
+// XRPL Transaction Functions
+// Enables XRP transfers between accounts
 export class Transfer {
   async transferXRP(
     senderSeed: string,

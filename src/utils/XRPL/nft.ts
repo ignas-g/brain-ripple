@@ -8,6 +8,8 @@ import {
     TxResponse
 } from "xrpl";
 
+// NFT Creation and Retrieval Functions
+// Facilitates NFT minting and provides access to NFT listings
 export class NFT {
     async mintNft(nftUrl: string): Promise<{ tx: TxResponse; nfts: AccountNFTsResponse }> {
         try {

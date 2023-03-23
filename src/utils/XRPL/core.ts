@@ -1,6 +1,8 @@
 import * as xrpl from "xrpl";
 import config from "../../../config";
 
+// XRPL Core Library Functions
+// Retrieve network URLs, create clients, and establish connections with the network
 export class Core {
   static networks = {
     mainnet: "wss://s1.ripple.com",
