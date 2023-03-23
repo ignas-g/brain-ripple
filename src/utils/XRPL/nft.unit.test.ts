@@ -1,7 +1,7 @@
 import { NFT } from "./nft";
 import { Core } from "./core";
 import * as xrpl from "xrpl";
-import { Client } from "xrpl";
+import { AccountNFTsResponse, Client } from "xrpl";
 
 jest.mock("xrpl");
 jest.mock("./core");
@@ -27,6 +27,7 @@ const mockClient = ({
   submitAndWait: jest.fn(),
   request: jest.fn(),
   disconnect: jest.fn(),
+  isConnected: jest.fn(),
 } as unknown) as jest.Mocked<Client>;
 
 beforeEach(() => {
@@ -78,4 +79,65 @@ describe("NFT class", () => {
 
     expect(result).toBeDefined();
   });
+
+  it('should get tokens by address', async () => {
+    const nft = new NFT();
+    const address = 'rG4LjchUEAMU6trvCVfacqrPvkra7ogtss';
+
+    const mockNftResponse: AccountNFTsResponse = {
+      id: 1,
+      type: 'response',
+      result: {
+        account: address,
+        account_nfts: [
+          {
+            Flags: 0,
+            Issuer: 'Issuer',
+            NFTokenID: '1',
+            NFTokenTaxon: 123,
+            URI: 'ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf4dfuylqabf3oclgtqy55fbzdi',
+            nft_serial: 1,
+          },
+        ],
+        ledger_current_index: 1,
+        validated: true,
+      },
+    };
+
+    mockClient.request.mockResolvedValue(mockNftResponse);
+
+    const result = await nft.getTokensByAddress(address);
+
+    expect(Core.getClient).toBeCalledTimes(1);
+    expect(mockClient.request).toBeCalledWith({
+      command: 'account_nfts',
+      account: address,
+    });
+    expect(mockClient.disconnect).toBeCalledTimes(1);
+    expect(result).toEqual(mockNftResponse);
+  });
+
+  it('should throw an error if getting tokens by address fails', async () => {
+    const nft = new NFT();
+    const address = 'InvalidAddress';
+
+    const error = new Error('Failed to get tokens');
+    mockClient.request.mockRejectedValue(error);
+  
+    try {
+      await nft.getTokensByAddress(address);
+    } catch (e) {
+      // Assert the error message here
+      expect(e).toEqual(
+        new Error(`Error in getting NFT: ${error.message}`)
+      );
+    }
+
+    expect(mockClient.request).toBeCalledTimes(1);
+    expect(mockClient.request).toBeCalledWith({
+      command: "account_nfts",
+      account: address,
+    });
+  });
+  
 });

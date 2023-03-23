@@ -1,6 +1,7 @@
 import { NFT } from "../nft";
 import { Account } from "../account";
 import * as xrpl from "xrpl";
+import { AccountNFTsResponse } from "xrpl";
 
 describe("NFT Integration Tests", () => {
     const nftInstance = new NFT();
@@ -31,4 +32,14 @@ describe("NFT Integration Tests", () => {
         expect(nftsResponse.result.account_nfts).toBeDefined();
         expect(nftsResponse.result.account_nfts.some((nft: any) => nft.URI === xrpl.convertStringToHex(nftUrl))).toBe(true);
     }, 50000);
+
+    it('should fetch NFTs by address', async () => {
+        const classicAddress = 'rG4LjchUEAMU6trvCVfacqrPvkra7ogtss';
+
+        const result = await nftInstance.getTokensByAddress(classicAddress);
+    
+        expect(result).toBeDefined();
+        expect(result).toHaveProperty('result');
+        expect((result as AccountNFTsResponse).result.account_nfts).toBeDefined();
+      });
 });

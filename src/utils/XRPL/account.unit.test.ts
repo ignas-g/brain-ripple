@@ -28,6 +28,8 @@ describe("Account class", () => {
       const mockClient = {
         getXrpBalance: jest.fn().mockResolvedValue(mockBalance),
         connect: jest.fn(),
+        isConnected: jest.fn(),
+        disconnect: jest.fn(),
       };
 
       mockedCore.Core.getClient.mockResolvedValue(mockClient);
@@ -45,6 +47,8 @@ describe("Account class", () => {
       const mockClient = {
         getXrpBalance: jest.fn().mockRejectedValue(new Error("Error fetching balance")),
         connect: jest.fn(),
+        isConnected: jest.fn(),
+        disconnect: jest.fn(),
       };
 
       mockedCore.Core.getClient.mockResolvedValue(mockClient);

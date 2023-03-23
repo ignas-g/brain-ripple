@@ -10,8 +10,10 @@ import {
 
 export class NFT {
     async mintNft(nftUrl: string): Promise<{ tx: TxResponse; nfts: AccountNFTsResponse }> {
+        let client;
+
         try {
-            const client = await Core.getClient();
+            client = await Core.getClient();
             const accounts = Account.loadWallets();
 
             const transactionBlob: Transaction = {
@@ -42,13 +44,21 @@ export class NFT {
             } else {
                 throw new Error("An unexpected error occurred in minting NFT.");
             }
-        }
+        } finally {
+            if (client?.isConnected()) {
+                await client.disconnect();
+            }
+        }        
     }
 
     async getTokens(): Promise<AccountNFTsResponse> {
+        let client;
+
         try {
-            const client = await Core.getClient();
+            client = await Core.getClient();
             const accounts = Account.loadWallets();
+            
+            console.log(accounts.coldWallet.classicAddress);
 
             const nfts = await client.request({
                 command: "account_nfts",
@@ -63,6 +73,37 @@ export class NFT {
                 throw new Error(`Error in getting NFT: ${error.message}`);
             } else {
                 throw new Error("An unexpected error occurred in getting NFT.");
+            }
+        } finally {
+            if (client?.isConnected()) {
+                await client.disconnect();
+            }
+        }
+    }
+
+    async getTokensByAddress(classicAddress: string): Promise<AccountNFTsResponse> {
+        let client;
+
+        try {
+            client = await Core.getClient();
+
+            const nfts = await client.request({
+                command: "account_nfts",
+                account: classicAddress,
+            } as AccountNFTsRequest);
+
+            await client.disconnect();
+
+            return nfts;
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                throw new Error(`Error in getting NFT: ${error.message}`);
+            } else {
+                throw new Error("An unexpected error occurred in getting NFT.");
+            }
+        } finally {
+            if (client?.isConnected()) {
+                await client.disconnect();
             }
         }
     }
