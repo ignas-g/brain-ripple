@@ -2,8 +2,53 @@
 import { useRouter } from "next/router";
 import Head from "next/head";
 import styles from "@/styles/ViewNft.module.css";
+import BrainwaveFrequencyChart from "@/components/brain-frequencies";
+import BrainwaveChart from "@/components/brainwave";
+import {random} from "@/utils/random";
 
-const ViewNft = () => {
+function generateFrequencyData() {
+  //set random seed
+  const brainwaveTypes = [
+    "Delta",
+    "Theta",
+    "Alpha",
+    "Beta",
+    "Gamma",
+  ];
+
+  return brainwaveTypes.map((type) => ({
+    type,
+    frequency: random() * 100,
+  }));
+}
+
+function generateBrainwaveSeriesData(seriesCount:number, points: number) {
+  const data = [];
+
+  for (let i = 0; i < points; i++) {
+    const time = i;
+    for (let j = 0; j < seriesCount; j++) {
+      const value = random() * 100;
+      data.push({ time, value, series: `Series ${j + 1}` });
+    }
+  }
+
+  return data;
+}
+
+//generate server side props
+export async function getServerSideProps() {
+  const frData = generateFrequencyData();
+  const brSeriesData = generateBrainwaveSeriesData(16, 100);
+  return {
+    props: {
+      frData,
+      brSeriesData
+    }
+  }
+}
+
+const ViewNft = ({frData, brSeriesData}:{frData:any, brSeriesData:any}) => {
   const router = useRouter();
   const { id } = router.query;
 
@@ -24,6 +69,12 @@ const ViewNft = () => {
             <strong>ID:</strong> {id}
           </p>
           {/* Add other NFT properties here */}
+        </div>
+        <div>
+          <BrainwaveFrequencyChart data={frData}></BrainwaveFrequencyChart>
+        </div>
+        <div>
+          <BrainwaveChart data={brSeriesData}></BrainwaveChart>
         </div>
       </main>
     </>

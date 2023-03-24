@@ -11,6 +11,9 @@
     "test:integration": "jest --config jest.integration.config.js"
   },
   "dependencies": {
+    "@devexpress/dx-react-chart": "^4.0.3",
+    "@devexpress/dx-react-chart-material-ui": "^4.0.3",
+    "@devexpress/dx-react-core": "^4.0.3",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/material": "^5.11.14",
@@ -26,6 +29,7 @@
     "mongodb": "^5.1.0",
     "next": "13.2.4",
     "normalize.css": "^8.0.1",
+    "path": "^0.12.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "4.9.5",

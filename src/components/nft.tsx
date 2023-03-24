@@ -1,4 +1,6 @@
 import Grid from "@mui/system/Unstable_Grid";
+import BrainwaveChart from "@/components/brainwave";
+import BrainwaveFrequencyChart from "@/components/brain-frequencies";
 
 export type NftProps = {
     owner: string,
