@@ -32,7 +32,7 @@ async function loadCsvAndConvertToFormat(filePath: string, maxRows?: number): Pr
           rowCount++;
         } else {
           // @ts-ignore
-          
+
         }
       })
       .on('end', () => {
@@ -62,16 +62,6 @@ const duration = () => {
     console.log(message, diffMillisecond);
   }
 }
-
-
-// Example usage:
-loadCsvAndConvertToFormat('./path/to/your/csv-file.csv')
-  .then((data) => {
-    console.log(data);
-  })
-  .catch((error) => {
-    console.error('Error reading CSV file:', error);
-  });
 
 
 const post = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
