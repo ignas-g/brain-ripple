@@ -72,6 +72,6 @@ export default function handler(
     return res.status(404).json({});
   } catch (e) {
     console.error(e);
-    return res.status(500).json({});
+    return res.status(500).json({e});
   }
 }
