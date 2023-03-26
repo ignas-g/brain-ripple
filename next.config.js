@@ -15,6 +15,13 @@ const nextConfig = {
     XRPL_ADDRESS_HOT: config.xrpl_address_hot,
     MONGODB_BC_URI: config.MONGODB_BC_URI,
     MONGODB_BC_DB: config.MONGODB_BC_DB,
+    AWS_ACCESS_KEY_ID: config.AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY: config.AWS_SECRET_ACCESS_KEY,
+    AWS_REGION : config.AWS_REGION,
+    AWS_S3_BUCKET_NAME : config.AWS_S3_BUCKET_NAME,
+  },
+  images: {
+    domains: ['brain-ripple.s3.eu-west-2.amazonaws.com'],
   },
 }
 

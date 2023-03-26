@@ -7,9 +7,19 @@ import {
   Legend,
 } from "@devexpress/dx-react-chart-material-ui";
 import { Stack, Animation } from "@devexpress/dx-react-chart";
-import {random} from "@/utils/random";
+import { random } from "../utils/random"; // Update the import path
 
-const BrainwaveFrequencyChart = ({data}:{data:any}) => {
+// Add type definition for the data prop
+type DataType = {
+  type: string;
+  frequency: number;
+};
+
+type BrainwaveFrequencyChartProps = {
+  data: DataType[];
+};
+
+const BrainwaveFrequencyChart: React.FC<BrainwaveFrequencyChartProps> = ({ data }) => {
   return (
     <div style={{ width: "100%", height: "400px" }}>
       <Chart data={data}>
