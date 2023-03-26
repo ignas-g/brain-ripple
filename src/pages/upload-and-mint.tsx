@@ -81,8 +81,6 @@ export default function UploadAndMint() {
           You can upload your brainwave CSV files and mint an NFT out of them.
         </p>
         <p className={styles.paragraph}>Upload your CSV file and we will mint an NFT for you.</p>
-        {uploadState === 'in_progress' && <p>Uploading and minting in progress...</p>}
-        {uploadState === 'error' && <p className={styles.error}>{errorMessage}</p>}
         <form className={styles.form} onSubmit={handleSubmit}>
           <h2 className={styles.heading}>File to upload</h2>
           <input
@@ -113,6 +111,11 @@ export default function UploadAndMint() {
             value={ownerAddress}
             onChange={handleOwnerAddressChange}
           />
+          {uploadState === 'in_progress' && <p>Uploading and minting in progress...</p>}
+          {uploadState === 'error' && <p className={styles.error}>{errorMessage}</p>}
+          {uploadState === 'success' && (
+            <p className={styles.success}>Upload and mint successful! Loading the NFT...</p>
+          )}
           <button className={styles.submitButton} type="submit" disabled={uploadState === 'in_progress'}>
             Submit
           </button>

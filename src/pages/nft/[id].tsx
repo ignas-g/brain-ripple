@@ -101,7 +101,7 @@ const ViewNft = ({ nftData }: { nftData: any }) => {
 
 
     <div>
-      <BrainwaveChart data={brSeriesData}></BrainwaveChart>
+      <BrainwaveChart data={nftData.convertedCSV}></BrainwaveChart>
     </div>
 
 
