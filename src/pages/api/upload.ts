@@ -16,9 +16,23 @@ export const config = {
   }
 };
 
+// function to lod duration in milliseconds from start provided
+const duration = () => {
+  const start = new Date();
+  console.log('start',start);
+  return (message:string) => {
+    const end = new Date();
+    const diffMilisecond = end.getTime() - start.getTime();
+    console.log(message, diffMilisecond);
+  }
+}
+
 const post = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+  const log = duration();
+
   const form = new formidable.IncomingForm();
   form.parse(req, async function (err, fields, files) {
+    log('form.parse');
     const { thought, ownerAddress } = fields;
     const mintedDate = new Date();
 
@@ -33,10 +47,14 @@ const post = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     const newFilename = `${uuidv4()}.${fileExtension}`;
 
     const fileStream = fs.createReadStream(file.filepath);
+    log('before saveCsvToS3');
     const url = await saveCsvToS3(newFilename, fileStream);
+    log('after saveCsvToS3');
     const imageUrl = 'https://brain-ripple.s3.eu-west-2.amazonaws.com/nft.png';
 
+
     const {nftMetadataCid} = await uploadNftAndCsvToIpfs({ name: name as string, image: imageUrl, description: description as string }, file.filepath);
+    log('after uploadNftAndCsvToIpfs');
     const nftMetadataUrl = `https://ipfs.io/ipfs/${nftMetadataCid}`;
 
     const nft = new NFT();
@@ -48,7 +66,9 @@ const post = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     const nftId = nfts.result.account_nfts[nfts.result.account_nfts.length - 1].NFTokenID as string;
 
     await fs.unlinkSync(file.filepath);
+    log('after fs.unlinkSync');
     await saveNFT({ name: name as string, description: description as string, imageUrl, dataURL: url, s3FileName: newFilename, nftMetadataCid, transactionId, nftId, creator, mintedDate });
+    log('after saveNFT');
 
     return res.status(201).json({nftId});
   });
