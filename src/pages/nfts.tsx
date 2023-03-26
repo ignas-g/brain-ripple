@@ -1,8 +1,7 @@
-
 import Head from "next/head";
 import Nft from "@/components/nft";
 import styles from '@/styles/Nfts.module.css';
-import {connectToDatabase} from "@/utils/mongodb";
+import {loadNfts} from "@/utils/mongodb";
 
 type NFT = {
   id: string;
@@ -38,12 +37,6 @@ export default function Nfts({ nfts }:{nfts:NFT[]}) {
       </main>
     </>
   );
-}
-
-export async function loadNfts() {
-  const { db } = await connectToDatabase();
-  const nfts = await db.collection('nfts').find().toArray();
-  return nfts;
 }
 
 export async function getServerSideProps() {

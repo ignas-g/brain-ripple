@@ -1,32 +1,12 @@
 // pages/nft/[id].tsx
-import { useRouter } from "next/router";
+import {useRouter} from "next/router";
 import Head from "next/head";
 import Image from 'next/image';
 import styles from "@/styles/ViewNft.module.css";
 import BrainwaveChart from "@/components/brainwave";
-import { random } from "@/utils/random";
+import {random} from "@/utils/random";
 import React from "react";
-import {connectToDatabase} from "@/utils/mongodb";
-
-// Add a placeholder function to fetch NFT data from the database
-async function getNftById(nftId: string) {
-  const { db } = await connectToDatabase();
-  const nftsCollection = db.collection("nfts");
-
-  const nftData = await nftsCollection.findOne({ nftId: nftId });
-
-  if(!nftData) {
-    return null;
-  }
-
-  // Convert nftData to a plain JavaScript object
-  const nftDataObject = JSON.parse(JSON.stringify(nftData));
-
-  // Remove non-serializable properties if needed, e.g., _id
-  delete nftDataObject._id;
-
-  return nftDataObject;
-}
+import {getNftById} from "@/utils/mongodb";
 
 // Update getServerSideProps to fetch NFT data
 export async function getServerSideProps(context: any) {
