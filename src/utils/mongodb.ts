@@ -48,3 +48,27 @@ export async function connectToDatabase() {
   cached.conn = await cached.promise
   return cached.conn
 }
+
+export async function loadNfts() {
+  const {db} = await connectToDatabase();
+  const nfts = await db.collection('nfts').find().toArray();
+  return nfts;
+} // Add a placeholder function to fetch NFT data from the database
+export async function getNftById(nftId: string) {
+  const {db} = await connectToDatabase();
+  const nftsCollection = db.collection("nfts");
+
+  const nftData = await nftsCollection.findOne({nftId: nftId});
+
+  if (!nftData) {
+    return null;
+  }
+
+  // Convert nftData to a plain JavaScript object
+  const nftDataObject = JSON.parse(JSON.stringify(nftData));
+
+  // Remove non-serializable properties if needed, e.g., _id
+  delete nftDataObject._id;
+
+  return nftDataObject;
+}

@@ -1,4 +1,3 @@
-// UploadAndMint.tsx
 import { useState, ChangeEvent, FormEvent } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -9,6 +8,7 @@ type UploadState = 'idle' | 'in_progress' | 'success' | 'error';
 export default function UploadAndMint() {
   const [file, setFile] = useState<File | null>(null);
   const [thought, setThought] = useState<string>('');
+  const [ownerAddress, setOwnerAddress] = useState<string>('');
   const [uploadState, setUploadState] = useState<UploadState>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const router = useRouter();
@@ -24,6 +24,15 @@ export default function UploadAndMint() {
     setThought(e.target.value);
   };
 
+  const handleOwnerAddressChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setOwnerAddress(e.target.value);
+  };
+
+  const isValidRippleAddress = (address: string) => {
+    const rippleAddressRegex = /^r[1-9A-HJ-NP-Za-km-z]{25,34}$/;
+    return rippleAddressRegex.test(address);
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -32,11 +41,17 @@ export default function UploadAndMint() {
       return;
     }
 
+    if (!isValidRippleAddress(ownerAddress)) {
+      setErrorMessage('Invalid Ripple address. Please provide a valid address.');
+      return;
+    }
+
     setUploadState('in_progress');
 
     const formData = new FormData();
     formData.append('file', file);
     formData.append('thought', thought);
+    formData.append('ownerAddress', ownerAddress);
 
     try {
       const response = await axios.post('/api/upload', formData, {
@@ -45,9 +60,12 @@ export default function UploadAndMint() {
         },
       });
       console.log('Upload success:', response);
+
+      // extract nftId from response
+      const nftId = response.data.nftId;
       setUploadState('success');
       //TODO: Navigate to the NFT page by id
-      router.push('/nft/123'); // Navigate to the "view-nft" page
+      router.push(`/nft/${nftId}`); // Navigate to the "view-nft" page
     } catch (error) {
       console.error('Upload error:', error);
       setUploadState('error');
@@ -85,6 +103,16 @@ export default function UploadAndMint() {
             value={thought}
             onChange={handleThoughtChange}
           />
+          <h2 className={styles.heading}>Creator Ripple address</h2>
+          <input
+            className={styles.textInput}
+            type="text"
+            id="ownerAddress"
+            name="ownerAddress"
+            placeholder="Owner Ripple address"
+            value={ownerAddress}
+            onChange={handleOwnerAddressChange}
+          />
           <button className={styles.submitButton} type="submit" disabled={uploadState === 'in_progress'}>
             Submit
           </button>
@@ -93,3 +121,4 @@ export default function UploadAndMint() {
     </>
   );
 }
+
