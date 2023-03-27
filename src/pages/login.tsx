@@ -4,12 +4,13 @@ import { Button } from "@mui/material";
 import styles from "@/styles/Login.module.css";
 import axios from "axios";
 import { SdkTypes } from "xumm-sdk";
+import { Label } from "recharts";
 
 async function requestXummSignin(): Promise<SdkTypes.XummPostPayloadResponse | null> {
   const response = await axios.post("/api/xumm/signin");
-  
+
   const data: SdkTypes.XummPostPayloadResponse = response.data;
-  
+
   if (data && data.next.always) {
     return data;
   }
@@ -20,6 +21,9 @@ async function requestXummSignin(): Promise<SdkTypes.XummPostPayloadResponse | n
 export default function Login() {
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
   const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [userWalletAddress, setUserWalletAddress] = useState<string | null>(
+    null
+  );
 
   const handleLogin = async () => {
     const data = await requestXummSignin();
@@ -41,6 +45,7 @@ export default function Login() {
               if (data && data.response && data.response.account) {
                 //TODO: User wallet address can be used in other flows.
                 console.log(data.response.account);
+                setUserWalletAddress(data.response.account);
 
                 socket.close();
               }
@@ -92,6 +97,13 @@ export default function Login() {
           )}
         </div>
       </div>
+      {userWalletAddress && (
+        <div className={styles.row}>
+          <div className={styles.column}>
+            <p>{userWalletAddress}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
