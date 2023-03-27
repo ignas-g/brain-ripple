@@ -7,6 +7,7 @@ filename = time.strftime("%Y%m%d-%H%M%S")
 filename = "eeg_data" + filename + ".csv"
 
 def main(i):
+    print('Start')
     BoardShim.enable_dev_board_logger()
     BoardShim.disable_board_logger()  # optional. take this out for initial setup for your board.
 
@@ -26,6 +27,8 @@ def main(i):
 
         # TODO: write header to csv file 32 columns for 32 channels
 
+        records = 0
+
         while keep_alive == True:
 
             while board.get_board_data_count() < 1:  # ensures that at least one item is logged
@@ -34,13 +37,14 @@ def main(i):
             board.stop_stream()
             board.start_stream()
             # print out dimensions of the data
-            print ('shape', data.shape)
+            records += 1
+            print ('records', records)
             # create a string to save to csv
             data_string = ""
             number_of_rows = data.shape[1]
 
             for i in range(0, number_of_rows):
-                for j in range(0, 31):
+                for j in range(1, 16):
                     data_string += str(data[j][i]) + ","
                 data_string += str(data[31][i]) + "\n"
                 f.writelines(data_string)
@@ -51,3 +55,6 @@ def main(i):
     board.stop_stream()
     board.release_session()
 
+# run the main
+if __name__ == "__main__":
+    main(0)

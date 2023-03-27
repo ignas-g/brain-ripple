@@ -17,6 +17,10 @@ const envSchema = Joi.object({
     MONGODB_BC_DB: Joi.string().required(),
     XUMM_API_KEY: Joi.string().required(),
     XUMM_API_SECRET: Joi.string().required(),
+    AWS_ACCESS_KEY_ID: Joi.string().required(),
+    AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+    AWS_REGION: Joi.string().required(),
+    AWS_S3_BUCKET_NAME: Joi.string().required(),
 }).unknown().required();
 
 const { error, value: envVars } = envSchema.prefs({ errors: { label: "key" } }).validate(process.env);
@@ -39,6 +43,10 @@ const config = {
     mongo_db_bc_db: envVars.MONGODB_BC_DB,
     xumm_api_key: envVars.XUMM_API_KEY,
     xumm_api_secret: envVars.XUMM_API_SECRET,
+    AWS_ACCESS_KEY_ID: envVars.AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY: envVars.AWS_SECRET_ACCESS_KEY,
+    AWS_REGION: envVars.AWS_REGION,
+    AWS_S3_BUCKET_NAME: envVars.AWS_S3_BUCKET_NAME,
 };
 
 module.exports = config;
