@@ -1,6 +1,8 @@
 # BrainRipple
 
 BrainRipple is a revolutionary platform that enables users to record their thoughts, mint them as NFTs, and use these thoughts to control their computers. Our platform leverages the power of Next.js, the XRPL blockchain, OpenBCI, and machine learning with Python to provide a seamless and innovative experience.
+You can learn more about this project by watching this video: https://www.youtube.com/watch?v=6R3z8YuPd-0
+
 
 ## Overview
 
