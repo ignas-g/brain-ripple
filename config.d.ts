@@ -10,6 +10,8 @@ declare const config: {
     xrpl_address_hot: string;
     mongo_db_bc_uri: string;
     mongo_db_bc_db: string;
+    xumm_api_key: string;
+    xumm_api_secret: string;
 };
 
 export default config;

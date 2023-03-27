@@ -15,6 +15,8 @@ const nextConfig = {
     XRPL_ADDRESS_HOT: config.xrpl_address_hot,
     MONGODB_BC_URI: config.MONGODB_BC_URI,
     MONGODB_BC_DB: config.MONGODB_BC_DB,
+    XUMM_API_KEY: config.XUMM_API_KEY,
+    XUMM_API_SECRET: config.XUMM_API_SECRET,
   },
 }
 
