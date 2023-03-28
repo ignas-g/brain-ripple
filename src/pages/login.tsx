@@ -4,7 +4,7 @@ import { Button } from "@mui/material";
 import styles from "@/styles/Login.module.css";
 import axios from "axios";
 import { SdkTypes } from "xumm-sdk";
-import { Label } from "recharts";
+import { useRouter } from "next/router";
 
 async function requestXummSignin(): Promise<SdkTypes.XummPostPayloadResponse | null> {
   const response = await axios.post("/api/xumm/signin");
@@ -24,6 +24,7 @@ export default function Login() {
   const [userWalletAddress, setUserWalletAddress] = useState<string | null>(
     null
   );
+  const router = useRouter();
 
   const handleLogin = async () => {
     const data = await requestXummSignin();
@@ -48,6 +49,8 @@ export default function Login() {
                 setUserWalletAddress(data.response.account);
 
                 socket.close();
+
+                router.push(`/user/${data.response.account}`);
               }
             })
             .catch((error) => {
