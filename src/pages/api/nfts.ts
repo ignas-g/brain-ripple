@@ -4,11 +4,11 @@ import * as mongodb from '../../utils/mongodb';
 import { AccountNFTsResponse } from 'xrpl';
 import { AccountNFToken } from 'xrpl/dist/npm/models/methods/accountNFTs';
 
-interface NftApiResponseData {
+export interface NftApiResponseData {
     nfts: AccountNFToken[];
 }
 
-interface NftApiErrorResponseData {
+export interface NftApiErrorResponseData {
     error: string;
 }
 

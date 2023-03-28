@@ -4,14 +4,14 @@ import Link from "next/link";
 export type NftProps = {
   id: string;
   creator: string;
-  mintedDate: Date;
-  name: string;
-  description: string;
+  mintedDate?: Date;
+  name?: string;
+  description?: string;
   imageUrl: string;
-  dataURL: string;
-  s3FileName: string;
-  nftMetadataCid: string;
-  transactionId: string;
+  dataURL?: string;
+  s3FileName?: string;
+  nftMetadataCid?: string;
+  transactionId?: string;
   nftId: string;
 };
 
@@ -33,7 +33,7 @@ export default function Nft(props: NftProps) {
             Minted:
           </Grid>
           <Grid xs={6}>
-            {props.mintedDate.toISOString()}
+            {props.mintedDate?.toISOString()}
           </Grid>
           <Grid xs={6}>
             NFT ID:
