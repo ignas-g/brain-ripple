@@ -1,5 +1,6 @@
 import { SdkTypes, XummSdk } from "xumm-sdk";
 import config from "../../config";
+import * as xrpl from 'xrpl';
 
 // The following class contains XummSdk related operations.
 // Users are able to create a sign-in request for the XUMM Wallet.
@@ -10,7 +11,7 @@ export class Xumm {
   constructor() {
     const apiKey = config.xumm_api_key;
     const apiSecret = config.xumm_api_secret;
-    
+
     this.xummSdk = new XummSdk(apiKey, apiSecret);
   }
 
@@ -32,7 +33,7 @@ export class Xumm {
         submit: false,
       },
     };
-  
+
     try {
       const response = await this.xummSdk.payload.create(payload);
       return response;
@@ -41,7 +42,44 @@ export class Xumm {
       throw error;
     }
   }
-  
+
+  async generateAssignAccountRequest(accountAddress: string) {
+    try {
+      const payload: SdkTypes.XummPostPayloadBodyJson = {
+        txjson: {
+          TransactionType: "AccountSet",
+          Account: accountAddress,
+          NFTokenMinter: config.xrpl_address_cold,
+          SetFlag: xrpl.AccountSetAsfFlags.asfAuthorizedNFTokenMinter,
+        }
+      };
+
+      const response = await this.xummSdk.payload.create(payload);
+      return response;
+    } catch (error) {
+      console.error("Error assigning account request:", error);
+      throw error;
+    }
+  }
+
+  async generateUnassignAccountRequest(accountAddress: string) {
+    const payload: SdkTypes.XummPostPayloadBodyJson = {
+      txjson: {
+        TransactionType: "AccountSet",
+        Account: accountAddress,
+        ClearFlag: xrpl.AccountSetAsfFlags.asfAuthorizedNFTokenMinter,
+      }
+    };
+
+    try {
+      const response = await this.xummSdk.payload.create(payload);
+      return response;
+    } catch (error) {
+      console.error("Error unassigning account request:", error);
+      throw error;
+    }
+  }
+
   // The payload data can be resolved by calling the resolvePayload method.
   async resolvePayload(payload: SdkTypes.XummPostPayloadResponse) {
     try {

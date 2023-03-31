@@ -65,6 +65,38 @@ describe("NFT class", () => {
     expect(result).toHaveProperty("nfts");
   });
 
+  it("should mint NFT for Account successfully", async () => {
+    const nft = new NFT();
+    const nftUrl = "ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf4dfuylqabf3oclgtqy55fbzdi";
+    const accountAddress = 'rnXfoueFK2iZ2ub3d42ZKppk5oRWesbc7A';
+
+    (Core.getClient as jest.Mock).mockResolvedValue(mockClient);
+    mockClient.submitAndWait.mockResolvedValue({} as xrpl.TxResponse);
+    mockClient.request.mockResolvedValue({} as xrpl.AccountNFTsResponse);
+
+    const result = await nft.mintNftForAccount(nftUrl, accountAddress);
+
+    expect(Core.getClient).toHaveBeenCalled();
+
+    expect(mockClient.submitAndWait).toHaveBeenCalledWith(
+      expect.objectContaining({
+        TransactionType: "NFTokenMint",
+        URI: xrpl.convertStringToHex(nftUrl),
+        Flags: 8,
+        TransferFee: 5000,
+        NFTokenTaxon: 0,
+        Issuer: accountAddress
+      }),
+      expect.anything()
+    );
+    
+    expect(mockClient.request).toHaveBeenCalled();
+    expect(mockClient.disconnect).toHaveBeenCalled();
+
+    expect(result).toHaveProperty("tx");
+    expect(result).toHaveProperty("nfts");
+  });
+
   it("should get NFTs successfully", async () => {
     const nft = new NFT();
 
@@ -138,6 +170,5 @@ describe("NFT class", () => {
       command: "account_nfts",
       account: address,
     });
-  });
-  
+  });  
 });
