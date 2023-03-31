@@ -53,14 +53,55 @@ export class NFT {
         }        
     }
 
+    async mintNftForAccount(nftUrl: string, accountAddress: string): Promise<{ tx: TxResponse; nfts: AccountNFTsResponse }> {
+        let client;
+
+        try {
+            client = await Core.getClient();
+            const accounts = Account.loadWallets();
+
+            const transactionBlob: Transaction = {
+                TransactionType: "NFTokenMint",
+                Account: accounts.coldWallet.classicAddress,
+                URI: xrpl.convertStringToHex(nftUrl),
+                Flags: 8,
+                TransferFee: 5000,
+                NFTokenTaxon: 0, // Required, but if you have no use for it, set to zero.
+                Issuer: accountAddress
+            };
+
+            const tx = await client.submitAndWait(
+                transactionBlob,
+                { wallet: accounts.coldWallet }
+            );
+
+            const nfts = await client.request({
+                command: "account_nfts",
+                account: accounts.coldWallet.classicAddress,
+            } as AccountNFTsRequest);
+
+            await client.disconnect();
+
+            return { tx, nfts };
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                throw new Error(`Error in minting NFT: ${error.message}`);
+            } else {
+                throw new Error("An unexpected error occurred in minting NFT.");
+            }
+        } finally {
+            if (client?.isConnected()) {
+                await client.disconnect();
+            }
+        }        
+    }
+
     async getTokens(): Promise<AccountNFTsResponse> {
         let client;
 
         try {
             client = await Core.getClient();
             const accounts = Account.loadWallets();
-            
-            console.log(accounts.coldWallet.classicAddress);
 
             const nfts = await client.request({
                 command: "account_nfts",
